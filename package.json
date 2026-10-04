@@ -1,17 +1,29 @@
 {
   "name": "roadie",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "ROADIE — an agentic AI tour manager grounded in Qloo's cultural taste graph.",
+  "license": "MIT",
   "scripts": {
+    "postinstall": "node scripts/copy-maplibre-worker.mjs",
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/copy-maplibre-worker.mjs && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "spike": "tsx --env-file-if-exists=.env.local scripts/spike.ts",
+    "eval": "tsx --env-file-if-exists=.env.local scripts/eval.ts",
+    "mcp": "tsx --env-file-if-exists=.env.local mcp/stdio.ts"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.0",
+    "framer-motion": "^14.0.0",
+    "maplibre-gl": "^6.12.0",
     "next": "16.3.8",
+    "openai": "^7.27.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -21,6 +33,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }
