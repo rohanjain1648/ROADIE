@@ -100,7 +100,7 @@ With **no keys at all** the app still runs end to end in *mock mode*. Qloo respo
 
 ### LLM choice
 
-- **Groq** (default when `GROQ_API_KEY` is set): `llama-3.3-70b-versatile`. It's fast, and JSON mode plus tool calling are supported. Set `GROQ_MODEL` to try others, e.g. `openai/gpt-oss-120b`. On the free tier, parallel city planning can hit rate limits; the SDK retries with backoff, and any step that still fails falls back to a deterministic template, so the tour always completes.
+- **Groq** (default when `GROQ_API_KEY` is set): `openai/gpt-oss-120b`. It's fast, and JSON mode plus tool calling are supported. Groq retires models over time; on a 404, list what your key can use with `curl https://api.groq.com/openai/v1/models -H "Authorization: Bearer $GROQ_API_KEY"` and set `GROQ_MODEL`. On the free tier, parallel city planning can hit rate limits; the SDK retries with backoff, and any step that still fails falls back to a deterministic template, so the tour always completes.
 - **OpenAI**: `gpt-4.1-mini` by default (`OPENAI_MODEL`).
 
 ## Deploy (Vercel)

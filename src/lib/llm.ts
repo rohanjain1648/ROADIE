@@ -31,6 +31,26 @@ function temperatureFor(model: string, t: number) {
   return /^(o\d|gpt-5)/.test(model) ? {} : { temperature: t };
 }
 
+// Groq's free tier allows ~8k tokens/min; unbounded parallel city calls just trigger 429 backoff storms.
+const maxConcurrent = Number(process.env.LLM_CONCURRENCY ?? (env.llmProvider === "groq" ? 2 : 6));
+let active = 0;
+const waiting: Array<() => void> = [];
+async function withSlot<T>(fn: () => Promise<T>): Promise<T> {
+  if (active >= maxConcurrent) await new Promise<void>((r) => waiting.push(r));
+  active++;
+  try {
+    return await fn();
+  } finally {
+    active--;
+    waiting.shift()?.();
+  }
+}
+
+/** gpt-oss reasoning tokens count against TPM; "low" keeps planning calls cheap and fast. */
+function reasoningFor(model: string) {
+  return /gpt-oss/.test(model) ? { reasoning_effort: "low" as const } : {};
+}
+
 function extractJson(text: string): unknown {
   try {
     return JSON.parse(text);
@@ -66,12 +86,15 @@ export async function chatJSON<T>(opts: JsonCallOptions<T>): Promise<{ data: T; 
 
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const res = await c.chat.completions.create({
-        model,
-        messages,
-        response_format: { type: "json_object" },
-        ...temperatureFor(model, opts.temperature ?? 0.6),
-      });
+      const res = await withSlot(() =>
+        c.chat.completions.create({
+          model,
+          messages,
+          response_format: { type: "json_object" },
+          ...temperatureFor(model, opts.temperature ?? 0.6),
+          ...reasoningFor(model),
+        }),
+      );
       const text = res.choices[0]?.message?.content ?? "";
       const parsed = opts.schema.safeParse(extractJson(text));
       if (parsed.success) return { data: parsed.data, source: "llm" };
@@ -128,6 +151,7 @@ export async function runToolLoop(opts: {
       tools: opts.tools,
       tool_choice: "auto",
       ...temperatureFor(model, 0.3),
+      ...reasoningFor(model),
     });
     const msg = res.choices[0]?.message;
     if (!msg) break;

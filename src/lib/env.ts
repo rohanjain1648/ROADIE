@@ -24,7 +24,7 @@ export const env = {
     return pickProvider();
   },
   groqApiKey: process.env.GROQ_API_KEY ?? "",
-  groqModel: process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile",
+  groqModel: process.env.GROQ_MODEL ?? "openai/gpt-oss-120b",
   openaiApiKey: process.env.OPENAI_API_KEY ?? "",
   openaiModel: process.env.OPENAI_MODEL ?? "gpt-4.1-mini",
 

@@ -81,10 +81,18 @@ export async function runTourAgent(req: TourRequest, emit: Emit): Promise<TourPl
         candidates.push(...found);
         if (found.length) break;
       }
-      const chosen =
-        (req.artistId && candidates.find((c) => c.id === req.artistId)) ||
+      let chosen: QEntity | undefined =
+        (req.artistId ? candidates.find((c) => c.id === req.artistId) : undefined) ||
         candidates.find((c) => c.name.toLowerCase() === req.artist.toLowerCase()) ||
         candidates[0];
+      // Qloo often holds several entities with the same name (stubs with no taste data). Prefer the one with signal.
+      const wanted = req.artist.toLowerCase();
+      const dupes = candidates.filter((c) => c.name.toLowerCase().includes(wanted)).slice(0, 4);
+      if (!req.artistId && dupes.length > 1) {
+        const richness = await Promise.all(dupes.map((c) => q.tasteTags([c.id], 8).then((t) => t.length).catch(() => 0)));
+        const best = richness.indexOf(Math.max(...richness));
+        if (richness[best] > 0) chosen = dupes[best];
+      }
       if (chosen) return chosen;
       if (req.artistId) return { id: req.artistId, name: req.artist, type: `urn:entity:${types[0]}`, tags: [] } as QEntity;
       throw new Error(`"${req.artist}" isn't in Qloo's taste graph yet — try a different spelling or a better-known act.`);

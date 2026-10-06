@@ -17,8 +17,8 @@ const compactEntity = (e: QEntity) => ({
   affinity: e.affinity !== undefined ? Number(e.affinity.toFixed(2)) : undefined,
   rating: e.rating,
   price: e.priceLevel,
-  about: e.description?.slice(0, 140),
-  tags: e.tags.slice(0, 4).map((t) => t.name),
+  about: e.description?.slice(0, 80),
+  tags: e.tags.slice(0, 3).map((t) => t.name),
 });
 
 export function demographicsSummary(d: QDemographics | null): string {
@@ -115,13 +115,13 @@ Fan taste tags: ${args.tags.slice(0, 10).map((t) => t.name).join(", ")}
 ${req.notes ? `Artist notes: ${req.notes}` : ""}
 
 VENUE candidates (Qloo places loved by these fans in ${args.city}):
-${JSON.stringify(args.venues.map(compactEntity))}
+${JSON.stringify(args.venues.slice(0, 6).map(compactEntity))}
 ${comedy ? "SUPPORT ACT" : "OPENER"} candidates (loved by ${args.city} fans of this artist):
-${JSON.stringify(args.openers.map(compactEntity))}
+${JSON.stringify(args.openers.slice(0, 5).map(compactEntity))}
 PRE-SHOW dining candidates:
-${JSON.stringify(args.food.map(compactEntity))}
+${JSON.stringify(args.food.slice(0, 4).map(compactEntity))}
 AFTER-PARTY bar candidates:
-${JSON.stringify(args.bars.map(compactEntity))}
+${JSON.stringify(args.bars.slice(0, 4).map(compactEntity))}
 
 Return JSON:
 {
