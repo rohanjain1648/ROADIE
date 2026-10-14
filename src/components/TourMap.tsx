@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import type { MarketCity, Stop } from "@/lib/agent/types";
 import type { QHeatPoint } from "@/lib/qloo/types";
 
-const STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+const STYLE = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
 
 interface Props {
   center: [number, number];
@@ -91,12 +91,12 @@ export default function TourMap({ center, zoom, heatPoints, cities, stops, route
             "interpolate",
             ["linear"],
             ["heatmap-density"],
-            0, "rgba(0,0,0,0)",
-            0.15, "rgba(90,40,160,0.45)",
-            0.35, "#a12bd6",
-            0.55, "#ff4d8d",
-            0.75, "#ffb547",
-            1, "#c8ff3d",
+            0, "rgba(255,255,255,0)",
+            0.15, "rgba(179,161,255,0.4)",
+            0.35, "#8b6cf7",
+            0.55, "#e3336e",
+            0.75, "#ff7a45",
+            1, "#ffb020",
           ],
         },
       });
@@ -106,23 +106,23 @@ export default function TourMap({ center, zoom, heatPoints, cities, stops, route
         source: "cities",
         paint: {
           "circle-radius": ["interpolate", ["linear"], ["get", "heat"], 0, 2, 100, 6],
-          "circle-color": ["interpolate", ["linear"], ["get", "heat"], 0, "#3a3a46", 50, "#ff4d8d", 100, "#c8ff3d"],
-          "circle-opacity": 0.75,
+          "circle-color": ["interpolate", ["linear"], ["get", "heat"], 0, "#c9c6d6", 50, "#e3336e", 100, "#5b32f0"],
+          "circle-opacity": 0.85,
           "circle-stroke-width": 1,
-          "circle-stroke-color": "#08080a",
+          "circle-stroke-color": "#ffffff",
         },
       });
       map.addLayer({
         id: "route-glow",
         type: "line",
         source: "route",
-        paint: { "line-color": "#c8ff3d", "line-width": 8, "line-opacity": 0.15, "line-blur": 4 },
+        paint: { "line-color": "#5b32f0", "line-width": 8, "line-opacity": 0.15, "line-blur": 4 },
       });
       map.addLayer({
         id: "route",
         type: "line",
         source: "route",
-        paint: { "line-color": "#c8ff3d", "line-width": 2, "line-dasharray": [2, 1.5] },
+        paint: { "line-color": "#5b32f0", "line-width": 2.5, "line-dasharray": [2, 1.5] },
       });
 
       const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 8 });
@@ -164,7 +164,7 @@ export default function TourMap({ center, zoom, heatPoints, cities, stops, route
     markersRef.current = path.map((s, i) => {
       const el = document.createElement("div");
       el.className =
-        "grid h-6 w-6 place-items-center rounded-full bg-[#c8ff3d] text-[11px] font-bold text-[#08080a] shadow-[0_0_0_3px_rgba(8,8,10,0.9)]";
+        "grid h-7 w-7 place-items-center rounded-full bg-[#5b32f0] text-[11px] font-bold text-white shadow-[0_0_0_3px_#fff,0_6px_14px_rgba(91,50,240,0.45)]";
       el.textContent = String(i + 1);
       el.title = s.name;
       return new maplibregl.Marker({ element: el }).setLngLat([s.lon, s.lat]).addTo(map);

@@ -14,12 +14,13 @@ const ROWS = [
 export function HeroPoster() {
   return (
     <div className="relative mx-auto w-full max-w-sm">
-      <div className="absolute -inset-6 rounded-[2rem] bg-acid/10 blur-3xl" aria-hidden />
+      <div className="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-acid/20 to-heat/15 blur-3xl" aria-hidden />
       <motion.div
         initial={{ rotate: -2, y: 20, opacity: 0 }}
         animate={{ rotate: -2, y: 0, opacity: 1 }}
+        whileHover={{ rotate: 0, y: -4 }}
         transition={{ duration: 0.7, ease: [0.21, 0.6, 0.35, 1] }}
-        className="relative rounded-3xl border border-line bg-panel p-6 shadow-2xl"
+        className="relative rounded-3xl border border-line bg-panel p-7 shadow-[0_40px_80px_-30px_rgba(91,50,240,0.35)]"
       >
         <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
           <span>Tour book</span>

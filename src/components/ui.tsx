@@ -8,35 +8,38 @@ export function cx(...classes: Array<string | false | null | undefined>) {
 export function Logo({ className }: { className?: string }) {
   return (
     <Link href="/" className={cx("group inline-flex items-center gap-2", className)}>
-      <span className="grid h-7 w-7 place-items-center rounded-md bg-acid text-ink transition-transform group-hover:-rotate-6">
+      <span className="grid h-8 w-8 place-items-center rounded-[10px] bg-gradient-to-br from-[#6a3df7] to-[#e3336e] text-white shadow-[0_6px_14px_-6px_rgba(91,50,240,0.7)] transition-transform group-hover:-rotate-6 group-hover:scale-105">
         <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
           <path d="M4 18c3-8 6-12 8-12s3 4 4 6 2 3 4 3" />
           <circle cx="4" cy="18" r="1.6" fill="currentColor" />
           <circle cx="20" cy="15" r="1.6" fill="currentColor" />
         </svg>
       </span>
-      <span className="font-display text-[15px] font-bold tracking-tight">ROADIE</span>
+      <span className="font-display text-[17px] font-bold tracking-tight">Roadie</span>
     </Link>
   );
 }
 
 export function Nav() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line/60 bg-ink/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-line/70 bg-white/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Logo />
-        <nav className="flex items-center gap-1 text-sm text-muted">
-          <Link href="/plan" className="rounded-md px-3 py-1.5 hover:text-text">Plan a tour</Link>
-          <Link href="/proof" className="rounded-md px-3 py-1.5 hover:text-text">Proof</Link>
-          <Link href="/#mcp" className="hidden rounded-md px-3 py-1.5 hover:text-text sm:block">MCP</Link>
+        <nav className="flex items-center gap-1 text-sm font-medium text-muted">
+          <Link href="/#demos" className="hidden rounded-full px-3.5 py-2 transition hover:bg-panel-2 hover:text-text md:block">Demos</Link>
+          <Link href="/proof" className="rounded-full px-3.5 py-2 transition hover:bg-panel-2 hover:text-text">Proof</Link>
+          <Link href="/#mcp" className="hidden rounded-full px-3.5 py-2 transition hover:bg-panel-2 hover:text-text sm:block">MCP</Link>
           <a
             href={process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/"}
             target="_blank"
             rel="noreferrer"
-            className="ml-1 hidden rounded-md border border-line px-3 py-1.5 text-text hover:border-acid/60 sm:block"
+            className="hidden rounded-full px-3.5 py-2 transition hover:bg-panel-2 hover:text-text sm:block"
           >
             GitHub
           </a>
+          <Link href="/plan" className="btn-primary ml-2 rounded-full px-4 py-2 font-semibold">
+            Plan a tour
+          </Link>
         </nav>
       </div>
     </header>
@@ -87,10 +90,15 @@ export function EntityRow({ entity, label, compact }: { entity: QEntity | null |
 
 export function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: string }) {
   return (
-    <div className="mb-4">
-      {kicker && <div className="mb-1 font-mono text-[11px] uppercase tracking-[0.2em] text-acid">{kicker}</div>}
-      <h2 className="font-display text-xl font-bold tracking-tight sm:text-2xl">{title}</h2>
-      {sub && <p className="mt-1 max-w-2xl text-sm text-muted">{sub}</p>}
+    <div className="mb-8">
+      {kicker && (
+        <div className="mb-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-acid">
+          <span className="h-px w-6 bg-acid/60" />
+          {kicker}
+        </div>
+      )}
+      <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl">{title}</h2>
+      {sub && <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted">{sub}</p>}
     </div>
   );
 }

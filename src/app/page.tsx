@@ -38,100 +38,105 @@ const PIPELINE = [
 
 export default function Home() {
   return (
-    <div className="glow-bg min-h-screen">
+    <div className="min-h-screen bg-white">
       <Nav />
 
       {/* hero */}
-      <section className="grid-lines border-b border-line/60">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_1fr] lg:py-24">
+      <section className="glow-bg relative overflow-hidden border-b border-line/70">
+        <div className="grid-lines absolute inset-0" aria-hidden />
+        <div className="blob -left-24 top-10 h-72 w-72 bg-[#c9b8ff]" aria-hidden />
+        <div className="blob -right-16 top-40 h-64 w-64 bg-[#ffc2d6]" style={{ animationDelay: "-6s" }} aria-hidden />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 py-16 sm:px-6 lg:grid-cols-[1.15fr_1fr] lg:py-24">
           <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-acid/30 bg-acid/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-acid">
-              Agentic tour manager · powered by Qloo
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-white/80 px-3.5 py-1.5 text-xs font-medium text-muted shadow-sm backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-acid pulse-ring" />
+              AI tour manager · grounded in Qloo&apos;s taste graph
             </div>
-            <h1 className="font-display text-4xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl">
-              Book the cities where your fans <span className="text-acid">already are.</span>
+            <h1 className="font-display text-5xl font-bold leading-[1.02] tracking-tight sm:text-7xl">
+              Book the cities where your fans{" "}
+              <span className="font-serif-accent text-gradient pr-1 text-[1.08em]">already are.</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
-              ROADIE is an AI agent that plans tours for independent artists and comedians using Qloo&apos;s 250M+ entity taste graph.
-              It finds affinity hotspots, venues your crowd already loves, openers, brand partners and city-tuned promo. Every pick
-              has a real Qloo ID behind it.
+              Name an artist or comedian. Roadie maps where their audience really lives, then plans the route, venues, openers,
+              sponsors and promo for every city, with a real Qloo ID behind every pick.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/plan"
-                className="rounded-xl bg-acid px-5 py-3 font-display text-sm font-bold text-ink transition hover:shadow-[0_0_40px_-8px_rgba(200,255,61,0.8)]"
-              >
-                Plan a tour →
-              </Link>
-              <a href="#demos" className="rounded-xl border border-line px-5 py-3 text-sm font-semibold hover:border-acid/50">
-                Try a one-click demo
-              </a>
+
+            {/* quick start: straight into the planner with the artist prefilled */}
+            <form action="/plan" className="mt-8 flex max-w-xl flex-col gap-2 rounded-2xl border border-line bg-white p-2 shadow-[0_20px_50px_-24px_rgba(91,50,240,0.35)] sm:flex-row sm:items-center">
+              <label htmlFor="hero-artist" className="sr-only">Artist or comedian</label>
+              <input
+                id="hero-artist"
+                name="artist"
+                autoComplete="off"
+                placeholder="Try “Phoebe Bridgers” or “Zakir Khan”"
+                className="min-w-0 flex-1 rounded-xl bg-transparent px-4 py-3 text-base outline-none placeholder:text-muted/70"
+              />
+              <button className="btn-primary rounded-xl px-6 py-3 font-display text-sm font-semibold">Plan my tour →</button>
+            </form>
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-muted">
+              <span>or run a demo:</span>
+              {DEMOS.map((d) => (
+                <Link
+                  key={d.artist}
+                  href={`/plan?${d.q}&auto=1`}
+                  className="btn-ghost rounded-full px-3 py-1 text-[13px] font-medium text-text"
+                >
+                  {d.artist}
+                </Link>
+              ))}
             </div>
-            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted">
-              <span>✓ No login</span>
-              <span>✓ Live agent trace</span>
-              <span>✓ Side-by-side vs. LLM-only</span>
-              <span>✓ MCP server included</span>
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
+              {["No login", "Live agent trace", "Side-by-side vs. LLM-only", "MCP server included"].map((t) => (
+                <span key={t} className="inline-flex items-center gap-1.5">
+                  <span className="text-acid">✓</span> {t}
+                </span>
+              ))}
             </div>
           </div>
           <HeroPoster />
         </div>
       </section>
 
-      {/* problem */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
-        <Reveal>
-          <SectionTitle
-            kicker="The problem"
-            title="Touring is a taste problem disguised as a logistics problem."
-            sub="Independent acts lose money playing rooms in cities where their audience isn't. Streaming stats only show where you've already been. Ask a generic chatbot and you get the ten biggest cities, plus venues that might not exist."
-          />
-        </Reveal>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <Reveal delay={0.05}>
-            <div className="h-full rounded-2xl border border-line bg-panel p-6">
-              <div className="mb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-heat">LLM only</div>
-              <ul className="space-y-2.5 text-sm text-text/80">
-                <li>✗ Routes by population: &quot;New York, LA, Chicago…&quot;</li>
-                <li>✗ Venue names from memory that may be closed, wrong or made up</li>
-                <li>✗ Openers picked by genre stereotype</li>
-                <li>✗ Sponsors guessed from vibes</li>
-                <li>✗ The same promo copy in every city</li>
-              </ul>
+      {/* how it works, at a glance */}
+      <section className="border-b border-line/70 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-px px-4 py-10 sm:px-6 md:grid-cols-4">
+          {[
+            ["1", "Pick an artist", "Search Qloo's graph or type a name."],
+            ["2", "Watch it work", "Live trace as the heatmap fills in."],
+            ["3", "Get a tour book", "Route, venues, openers, promo."],
+            ["4", "Share it", "One link your agent or promoter can open."],
+          ].map(([n, t, d]) => (
+            <div key={n} className="flex items-start gap-3 px-2 py-3 md:px-5">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-acid/10 font-display text-sm font-bold text-acid">{n}</span>
+              <div>
+                <div className="font-display font-semibold">{t}</div>
+                <div className="text-sm text-muted">{d}</div>
+              </div>
             </div>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <div className="h-full rounded-2xl border border-acid/30 bg-acid/[0.04] p-6">
-              <div className="mb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-acid">ROADIE + Qloo</div>
-              <ul className="space-y-2.5 text-sm text-text/90">
-                <li>✓ Routes by fan-affinity heatmap; skips cities that are big but cold</li>
-                <li>✓ Venues are Qloo places these fans over-index on, with affinity scores</li>
-                <li>✓ Openers that local fans of this act already love</li>
-                <li>✓ Brands scored by audience overlap via /compare</li>
-                <li>✓ Promo per city, in the local language, using the fans&apos; own taste</li>
-              </ul>
-            </div>
-          </Reveal>
+          ))}
         </div>
       </section>
 
       {/* demos */}
-      <section id="demos" className="border-y border-line/60 bg-panel/40">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+      <section id="demos" className="scroll-mt-20 bg-panel-2/60">
+        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
           <Reveal>
             <SectionTitle kicker="Try it" title="One click. Watch the agent work." sub="Each demo runs the full agent live: Qloo calls stream into the trace while the map heats up and the stops fill in." />
           </Reveal>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-3">
             {DEMOS.map((d, i) => (
               <Reveal key={d.artist} delay={i * 0.06}>
                 <Link
                   href={`/plan?${d.q}&auto=1`}
-                  className="group flex h-full flex-col rounded-2xl border border-line bg-panel p-6 transition hover:-translate-y-0.5 hover:border-acid/50"
+                  className="card-hover group flex h-full flex-col rounded-3xl border border-line bg-panel p-7"
                 >
-                  <div className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted">{d.tag}</div>
-                  <div className="mt-3 font-display text-2xl font-bold">{d.artist}</div>
-                  <p className="mt-2 flex-1 text-sm text-muted">{d.blurb}</p>
-                  <div className="mt-5 text-sm font-semibold text-acid group-hover:underline">Run agent →</div>
+                  <span className="inline-flex w-fit rounded-full bg-panel-2 px-3 py-1 text-xs font-medium text-muted">{d.tag}</span>
+                  <div className="mt-5 font-display text-3xl font-bold tracking-tight">{d.artist}</div>
+                  <p className="mt-2 flex-1 text-[15px] leading-relaxed text-muted">{d.blurb}</p>
+                  <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-acid">
+                    Run agent
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                  </div>
                 </Link>
               </Reveal>
             ))}
@@ -139,8 +144,45 @@ export default function Home() {
         </div>
       </section>
 
+      {/* problem */}
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
+        <Reveal>
+          <SectionTitle
+            kicker="The problem"
+            title="Touring is a taste problem disguised as a logistics problem."
+            sub="Independent acts lose money playing rooms in cities where their audience isn't. Streaming stats only show where you've already been. Ask a generic chatbot and you get the ten biggest cities, plus venues that might not exist."
+          />
+        </Reveal>
+        <div className="grid gap-5 md:grid-cols-2">
+          <Reveal delay={0.05}>
+            <div className="h-full rounded-3xl border border-line bg-panel p-8">
+              <div className="mb-4 inline-flex rounded-full bg-heat/10 px-3 py-1 text-xs font-semibold text-heat">LLM only</div>
+              <ul className="space-y-3 text-[15px] text-text/80">
+                <li className="flex gap-3"><span className="text-heat">✗</span> Routes by population: &quot;New York, LA, Chicago…&quot;</li>
+                <li className="flex gap-3"><span className="text-heat">✗</span> Venue names from memory that may be closed, wrong or made up</li>
+                <li className="flex gap-3"><span className="text-heat">✗</span> Openers picked by genre stereotype</li>
+                <li className="flex gap-3"><span className="text-heat">✗</span> Sponsors guessed from vibes</li>
+                <li className="flex gap-3"><span className="text-heat">✗</span> The same promo copy in every city</li>
+              </ul>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="h-full rounded-3xl border border-acid/25 bg-gradient-to-br from-acid/[0.06] to-white p-8 shadow-[0_24px_60px_-30px_rgba(91,50,240,0.4)]">
+              <div className="mb-4 inline-flex rounded-full bg-acid/10 px-3 py-1 text-xs font-semibold text-acid">Roadie + Qloo</div>
+              <ul className="space-y-3 text-[15px] text-text/90">
+                <li className="flex gap-3"><span className="text-acid">✓</span> Routes by fan-affinity heatmap; skips cities that are big but cold</li>
+                <li className="flex gap-3"><span className="text-acid">✓</span> Venues are Qloo places these fans over-index on, with affinity scores</li>
+                <li className="flex gap-3"><span className="text-acid">✓</span> Openers that local fans of this act already love</li>
+                <li className="flex gap-3"><span className="text-acid">✓</span> Brands scored by audience overlap via /compare</li>
+                <li className="flex gap-3"><span className="text-acid">✓</span> Promo per city, in the local language, using the fans&apos; own taste</li>
+              </ul>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* pipeline */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
         <Reveal>
           <SectionTitle
             kicker="Under the hood"
@@ -148,15 +190,15 @@ export default function Home() {
             sub="The LLM never supplies facts. Qloo provides the candidates; the model chooses among them by ID and writes the copy. Then a critic checks every ID."
           />
         </Reveal>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PIPELINE.map(([name, api, what], i) => (
             <Reveal key={name} delay={i * 0.03}>
-              <div className="h-full rounded-xl border border-line bg-panel p-4">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs text-acid">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="font-semibold">{name}</span>
+              <div className="card-hover h-full rounded-2xl border border-line bg-panel p-5">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-7 w-7 place-items-center rounded-lg bg-acid/10 font-mono text-[11px] font-semibold text-acid">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="font-display text-lg font-semibold">{name}</span>
                 </div>
-                <div className="mt-1 font-mono text-[11px] text-sky">{api}</div>
+                <div className="mt-3 font-mono text-[11px] text-sky">{api}</div>
                 <div className="mt-1.5 text-sm text-muted">{what}</div>
               </div>
             </Reveal>
@@ -172,8 +214,8 @@ export default function Home() {
       </section>
 
       {/* who */}
-      <section className="border-y border-line/60 bg-panel/40">
-        <div className="mx-auto grid max-w-7xl gap-4 px-4 py-16 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
+      <section className="bg-panel-2/60">
+        <div className="mx-auto grid max-w-7xl gap-5 px-4 py-20 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
           {[
             ["Independent artists", "Route your first headline run without a booking agent's rolodex."],
             ["Comedians", "Comedy rooms, support acts and per-city local material."],
@@ -181,9 +223,9 @@ export default function Home() {
             ["Brands", "Find the tours whose audiences already love you."],
           ].map(([t, d], i) => (
             <Reveal key={t} delay={i * 0.05}>
-              <div className="h-full rounded-2xl border border-line bg-panel p-5">
-                <div className="font-display font-bold">{t}</div>
-                <p className="mt-1 text-sm text-muted">{d}</p>
+              <div className="card-hover h-full rounded-2xl border border-line bg-panel p-6">
+                <div className="font-display text-lg font-semibold">{t}</div>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{d}</p>
               </div>
             </Reveal>
           ))}
@@ -191,7 +233,7 @@ export default function Home() {
       </section>
 
       {/* mcp */}
-      <section id="mcp" className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+      <section id="mcp" className="mx-auto max-w-7xl scroll-mt-20 px-4 py-24 sm:px-6">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
           <Reveal>
             <SectionTitle
@@ -201,7 +243,7 @@ export default function Home() {
             />
           </Reveal>
           <Reveal delay={0.08} className="min-w-0">
-            <pre className="scrollbar-thin overflow-x-auto rounded-2xl border border-line bg-panel p-5 font-mono text-[12px] leading-relaxed text-text/90">
+            <pre className="scrollbar-thin overflow-x-auto rounded-3xl border border-[#2a2640] bg-[#14111f] p-6 font-mono text-[12px] leading-relaxed text-[#d9d4f2] shadow-[0_30px_60px_-30px_rgba(21,19,31,0.5)]">
 {`// Streamable HTTP (deployed)
 {
   "mcpServers": {
@@ -226,7 +268,23 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-line/60">
+      {/* final CTA */}
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
+        <Reveal>
+          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#5b32f0] via-[#7b4cf5] to-[#e3336e] px-8 py-16 text-center text-white shadow-[0_40px_80px_-40px_rgba(91,50,240,0.7)] sm:px-16">
+            <div className="blob left-1/4 top-0 h-56 w-56 bg-white/30" aria-hidden />
+            <h2 className="relative font-display text-4xl font-bold tracking-tight sm:text-5xl">
+              Your next tour, <span className="font-serif-accent text-[1.1em]">routed by taste.</span>
+            </h2>
+            <p className="relative mx-auto mt-4 max-w-xl text-white/85">No login. Watch every Qloo call as the agent works.</p>
+            <Link href="/plan" className="relative mt-8 inline-flex rounded-full bg-white px-7 py-3.5 font-display text-sm font-semibold text-acid shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl">
+              Plan a tour →
+            </Link>
+          </div>
+        </Reveal>
+      </section>
+
+      <footer className="border-t border-line/70">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-8 text-sm text-muted sm:px-6">
           <Logo />
           <div>Built for the Qloo Agentic Hackathon · MIT licensed · Taste data © Qloo</div>

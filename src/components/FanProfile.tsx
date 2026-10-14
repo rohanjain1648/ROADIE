@@ -74,7 +74,7 @@ export function FanProfile({ plan }: { plan: Pick<TourPlan, "persona" | "fingerp
                 key={t.id || t.name}
                 className="rounded-full border px-2.5 py-1 text-xs"
                 style={{
-                  borderColor: `rgba(200,255,61,${0.15 + (1 - i / fingerprint.tags.length) * 0.5})`,
+                  borderColor: `rgba(91,50,240,${0.12 + (1 - i / fingerprint.tags.length) * 0.4})`,
                   color: i < 4 ? "var(--acid)" : undefined,
                 }}
                 title={t.affinity !== undefined ? `affinity ${t.affinity.toFixed(3)}` : t.id}

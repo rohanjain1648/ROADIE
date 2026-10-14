@@ -42,9 +42,20 @@ export function buildRequest(initial: Partial<TourRequest> = {}): TourRequest {
   return merged;
 }
 
-const label = "mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted";
+const label = "mb-1.5 block text-xs font-semibold text-text/70";
 const field =
-  "w-full rounded-xl border border-line bg-ink px-3 py-2.5 text-sm outline-none transition focus:border-acid/60 focus:ring-2 focus:ring-acid/10";
+  "w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm shadow-[0_1px_2px_rgba(21,19,31,0.03)] outline-none transition placeholder:text-muted/60 hover:border-acid/30 focus:border-acid focus:ring-4 focus:ring-acid/10";
+
+const EXAMPLES: Record<"music" | "comedy", string[]> = {
+  music: ["Phoebe Bridgers", "Khruangbin", "Big Thief"],
+  comedy: ["Zakir Khan", "Hasan Minhaj", "Bo Burnham"],
+};
+const CAPACITIES: Array<[TourRequest["capacity"], string, string]> = [
+  ["intimate", "Intimate", "<300"],
+  ["club", "Club", "300–1.5k"],
+  ["theatre", "Theatre", "1.5–5k"],
+  ["arena", "Arena", "5k+"],
+];
 
 export function TourForm({
   initial,
@@ -92,15 +103,16 @@ export function TourForm({
       }}
       className="space-y-5"
     >
-      <div className="grid grid-cols-2 gap-1 rounded-xl border border-line bg-ink p-1">
+      <div className="grid grid-cols-2 gap-1 rounded-xl bg-panel-2 p-1">
         {(["music", "comedy"] as const).map((k) => (
           <button
             type="button"
             key={k}
             onClick={() => set("kind", k)}
-            className={cx("rounded-lg py-2 text-sm font-medium capitalize transition", req.kind === k ? "bg-acid text-ink" : "text-muted hover:text-text")}
+            aria-pressed={req.kind === k}
+            className={cx("rounded-lg py-2 text-sm font-semibold capitalize transition", req.kind === k ? "bg-white text-acid shadow-[0_2px_8px_rgba(21,19,31,0.1)]" : "text-muted hover:text-text")}
           >
-            {k === "music" ? "🎸 Music" : "🎤 Comedy"}
+            {k}
           </button>
         ))}
       </div>
@@ -143,7 +155,28 @@ export function TourForm({
             ))}
           </ul>
         )}
-        {req.artistId && <div className="mt-1 truncate font-mono text-[10px] text-acid/80">✓ Qloo entity {req.artistId}</div>}
+        {req.artistId ? (
+          <div className="mt-1.5 truncate font-mono text-[10px] text-acid">✓ Qloo entity {req.artistId}</div>
+        ) : (
+          !req.artist && (
+            <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-muted">
+              <span>Try:</span>
+              {EXAMPLES[req.kind].map((n) => (
+                <button
+                  type="button"
+                  key={n}
+                  onClick={() => {
+                    setReq((r) => ({ ...r, artist: n, artistId: undefined }));
+                    lookup(n);
+                  }}
+                  className="rounded-full border border-line bg-white px-2.5 py-1 font-medium text-text/80 transition hover:border-acid/50 hover:text-acid"
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+          )
+        )}
       </div>
 
       <div>
@@ -178,7 +211,7 @@ export function TourForm({
 
       <div>
         <label className={label} htmlFor="shows">
-          Shows: <span className="text-acid">{req.shows}</span> <span className="normal-case tracking-normal text-muted/70">in a {windowDays}-day window</span>
+          Shows: <span className="font-semibold text-acid">{req.shows}</span> <span className="font-normal text-muted">in a {windowDays}-day window</span>
         </label>
         <input
           id="shows"
@@ -187,20 +220,32 @@ export function TourForm({
           max={12}
           value={req.shows}
           onChange={(e) => set("shows", Number(e.target.value))}
-          className="w-full accent-[#c8ff3d]"
+          className="w-full accent-[#5b32f0]"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className={label} htmlFor="capacity">Room size</label>
-          <select id="capacity" className={field} value={req.capacity} onChange={(e) => set("capacity", e.target.value as TourRequest["capacity"])}>
-            <option value="intimate">Intimate (&lt;300)</option>
-            <option value="club">Club (300–1.5k)</option>
-            <option value="theatre">Theatre (1.5–5k)</option>
-            <option value="arena">Arena (5k+)</option>
-          </select>
+      <div>
+        <span className={label}>Room size</span>
+        <div className="grid grid-cols-4 gap-1.5" role="group" aria-label="Room size">
+          {CAPACITIES.map(([id, name, range]) => (
+            <button
+              type="button"
+              key={id}
+              onClick={() => set("capacity", id)}
+              aria-pressed={req.capacity === id}
+              className={cx(
+                "rounded-xl border px-1 py-2 text-center transition",
+                req.capacity === id ? "border-acid bg-acid/[0.07] text-acid" : "border-line bg-white text-text/80 hover:border-acid/40",
+              )}
+            >
+              <div className="text-[13px] font-semibold">{name}</div>
+              <div className="text-[10px] text-muted">{range}</div>
+            </button>
+          ))}
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3">
         <div>
           <label className={label} htmlFor="language">Promo language</label>
           <select id="language" className={field} value={req.language} onChange={(e) => set("language", e.target.value)}>
@@ -212,7 +257,7 @@ export function TourForm({
       </div>
 
       <div>
-        <label className={label} htmlFor="notes">Notes for the agent <span className="normal-case tracking-normal text-muted/70">(optional)</span></label>
+        <label className={label} htmlFor="notes">Notes for the agent <span className="font-normal text-muted">(optional)</span></label>
         <textarea
           id="notes"
           rows={2}
@@ -226,7 +271,7 @@ export function TourForm({
 
       <button
         disabled={busy || !req.artist.trim()}
-        className="group relative w-full overflow-hidden rounded-xl bg-acid py-3 font-display text-sm font-bold text-ink transition hover:shadow-[0_0_40px_-8px_rgba(200,255,61,0.7)] disabled:opacity-50"
+        className="btn-primary group relative w-full rounded-xl py-3.5 font-display text-[15px] font-semibold disabled:cursor-not-allowed disabled:opacity-50"
       >
         {busy ? "Agent running…" : "Plan my tour →"}
       </button>

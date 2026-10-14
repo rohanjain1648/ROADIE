@@ -59,8 +59,8 @@ export function PlanClient() {
         {/* left: form or trace */}
         <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           {idle || state.status === "error" ? (
-            <div className="rounded-2xl border border-line bg-panel p-5">
-              <h1 className="mb-1 font-display text-xl font-bold">Plan a tour</h1>
+            <div className="rounded-3xl border border-line bg-panel p-6">
+              <h1 className="mb-1 font-display text-2xl font-bold tracking-tight">Plan a tour</h1>
               <p className="mb-5 text-sm text-muted">ROADIE reads Qloo&apos;s taste graph to find where your fans actually are.</p>
               <TourForm initial={state.request ?? initial} onSubmit={run} busy={false} />
               {state.status === "error" && (
@@ -71,7 +71,7 @@ export function PlanClient() {
             <>
               <AgentTrace state={state} />
               {state.status === "done" && (
-                <button onClick={reset} className="w-full rounded-xl border border-line py-2.5 text-sm hover:border-acid/50">
+                <button onClick={reset} className="btn-ghost w-full rounded-xl py-2.5 text-sm font-medium">
                   ← Plan another tour
                 </button>
               )}
@@ -96,7 +96,7 @@ export function PlanClient() {
                   <p className="mt-1 text-sm text-text/80">{state.persona.summary}</p>
                 </div>
               )}
-              <div className="h-[360px] overflow-hidden rounded-2xl border border-line">
+              <div className="h-[360px] overflow-hidden rounded-3xl border border-line shadow-[var(--shadow-card)]">
                 <TourMap
                   center={region.center}
                   zoom={region.zoom}
@@ -146,14 +146,17 @@ function IdleCanvas() {
     ["06", "Critic", "The agent rejects anything not grounded in Qloo and flags constraint breaks."],
   ];
   return (
-    <div className="grid-lines relative overflow-hidden rounded-2xl border border-line p-6 sm:p-8">
-      <div className="mb-6 font-mono text-[11px] uppercase tracking-[0.2em] text-acid">What the agent will do</div>
+    <div className="relative overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-panel-2 to-white p-6 sm:p-9">
+      <div className="mb-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+        Fill in the brief, <span className="font-serif-accent text-gradient">then watch it work.</span>
+      </div>
+      <p className="mb-7 max-w-lg text-sm text-muted">Here is what happens after you press “Plan my tour”. Everything streams in live.</p>
       <div className="grid gap-4 sm:grid-cols-2">
         {steps.map(([n, t, d]) => (
-          <div key={n} className="rounded-xl border border-line bg-panel/80 p-4 backdrop-blur">
-            <div className="font-mono text-xs text-acid">{n}</div>
-            <div className="mt-1 font-semibold">{t}</div>
-            <div className="mt-1 text-sm text-muted">{d}</div>
+          <div key={n} className="card-hover rounded-2xl border border-line bg-panel p-5">
+            <div className="grid h-7 w-7 place-items-center rounded-lg bg-acid/10 font-mono text-[11px] font-semibold text-acid">{n}</div>
+            <div className="mt-3 font-display text-lg font-semibold">{t}</div>
+            <div className="mt-1 text-sm leading-relaxed text-muted">{d}</div>
           </div>
         ))}
       </div>

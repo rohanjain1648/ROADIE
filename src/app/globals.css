@@ -1,18 +1,27 @@
 @import "tailwindcss";
 @import "maplibre-gl/dist/maplibre-gl.css";
 
+/*
+ * ROADIE design tokens — light, editorial theme.
+ * Token names are kept (ink/panel/acid…) so every component re-themes at once:
+ *   ink   = page background (white)      text  = primary text (near-black)
+ *   panel = card surface                 acid  = brand accent (electric violet)
+ */
 :root {
-  --ink: #08080a;
-  --panel: #111114;
-  --panel-2: #17171c;
-  --line: #26262e;
-  --muted: #8b8b98;
-  --text: #ececf1;
-  --acid: #c8ff3d;
-  --acid-dim: #8fb82a;
-  --heat: #ff4d8d;
-  --amber: #ffb547;
-  --sky: #5cc8ff;
+  --ink: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #f6f5f9;
+  --line: #e8e6ef;
+  --muted: #6a6878;
+  --text: #15131f;
+  --acid: #5b32f0;
+  --acid-dim: #b3a1ff;
+  --heat: #e3336e;
+  --amber: #b4570a;
+  --sky: #0b6fa8;
+
+  --shadow-card: 0 1px 2px rgba(21, 19, 31, 0.04), 0 8px 24px -12px rgba(21, 19, 31, 0.1);
+  --shadow-lift: 0 2px 4px rgba(21, 19, 31, 0.05), 0 18px 40px -16px rgba(91, 50, 240, 0.28);
 }
 
 @theme inline {
@@ -34,7 +43,8 @@
 
 html {
   background: var(--ink);
-  color-scheme: dark;
+  color-scheme: light;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -42,34 +52,134 @@ body {
   color: var(--text);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   overflow-x: clip; /* decorative glows/rotations must never cause sideways scroll */
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--acid);
-  color: var(--ink);
+  background: rgba(91, 50, 240, 0.2);
+  color: var(--text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---------- surfaces ---------- */
+/* every card using bg-panel gets a soft, layered shadow so white-on-white still has depth */
+.bg-panel {
+  box-shadow: var(--shadow-card);
+}
+.card-hover {
+  transition: transform 0.25s cubic-bezier(0.21, 0.6, 0.35, 1), box-shadow 0.25s, border-color 0.25s;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+  border-color: rgba(91, 50, 240, 0.35);
 }
 
 .glow-bg {
   background:
-    radial-gradient(60rem 30rem at 15% -10%, rgba(200, 255, 61, 0.12), transparent 60%),
-    radial-gradient(50rem 30rem at 95% 10%, rgba(255, 77, 141, 0.1), transparent 60%),
+    radial-gradient(52rem 28rem at 8% -8%, rgba(91, 50, 240, 0.09), transparent 62%),
+    radial-gradient(44rem 26rem at 100% 4%, rgba(227, 51, 110, 0.07), transparent 60%),
     var(--ink);
 }
 
 .grid-lines {
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 48px 48px;
+    linear-gradient(to right, rgba(21, 19, 31, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(21, 19, 31, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
 }
 
+/* ---------- type ---------- */
 .font-display {
   font-family: var(--font-display), var(--font-geist-sans), sans-serif;
-  word-spacing: 0.06em;
+  letter-spacing: -0.02em;
 }
-/* Unbounded is wide; Tailwind's tracking-tight collapses word gaps */
-.font-display.tracking-tight {
+/* serif italic flourish for highlighted words in headlines */
+.font-serif-accent {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
   letter-spacing: -0.01em;
+}
+.text-gradient {
+  background: linear-gradient(100deg, #5b32f0 10%, #e3336e 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- buttons ---------- */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #6a3df7, #4b24d6);
+  color: #fff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 10px 24px -10px rgba(91, 50, 240, 0.65);
+  transition: transform 0.2s, box-shadow 0.25s, filter 0.2s;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 16px 32px -10px rgba(91, 50, 240, 0.75);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.7s;
+}
+.btn-primary:hover::after {
+  transform: translateX(120%);
+}
+.btn-primary:disabled {
+  filter: grayscale(0.4);
+  box-shadow: none;
+  transform: none;
+}
+.btn-ghost {
+  background: #fff;
+  border: 1px solid var(--line);
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.btn-ghost:hover {
+  border-color: rgba(91, 50, 240, 0.5);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+/* ---------- hero atmosphere ---------- */
+@keyframes float-blob {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(30px, -24px, 0) scale(1.08); }
+}
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.5;
+  animation: float-blob 14s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
 }
 
 /* gig-ticket perforation between stub and body */
@@ -86,12 +196,13 @@ body {
   height: 6px;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: var(--line);
+  background: #d4d1e0;
   border-radius: 9999px;
 }
 
+/* ---------- map ---------- */
 .maplibregl-ctrl-attrib {
-  background: rgba(8, 8, 10, 0.7) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
   color: var(--muted) !important;
   font-size: 10px;
 }
@@ -99,12 +210,13 @@ body {
   color: var(--muted) !important;
 }
 .maplibregl-popup-content {
-  background: var(--panel-2) !important;
+  background: #fff !important;
   color: var(--text);
   border: 1px solid var(--line);
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   padding: 8px 12px !important;
   font-size: 12px;
+  box-shadow: var(--shadow-card) !important;
 }
 .maplibregl-popup-tip {
   display: none;
@@ -112,10 +224,10 @@ body {
 
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(200, 255, 61, 0.45);
+    box-shadow: 0 0 0 0 rgba(91, 50, 240, 0.4);
   }
   100% {
-    box-shadow: 0 0 0 10px rgba(200, 255, 61, 0);
+    box-shadow: 0 0 0 10px rgba(91, 50, 240, 0);
   }
 }
 .pulse-ring {
@@ -123,7 +235,12 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pulse-ring {
+  .pulse-ring,
+  .blob,
+  .marquee-track {
     animation: none;
+  }
+  html {
+    scroll-behavior: auto;
   }
 }
