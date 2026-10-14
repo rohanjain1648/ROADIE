@@ -1,9 +1,11 @@
 # ROADIE: an AI tour manager that knows where your fans are
 
+![ROADIE Cover](public/cover.jpg)
+
 > An agentic tour planner for independent artists and comedians, grounded in **Qloo's 250M+ entity taste graph**.
 > Built for the [Qloo Agentic Hackathon](https://qloo.devpost.com/).
 
-**Live demo:** `https://<your-deployment>.vercel.app` · **MCP endpoint:** `https://<your-deployment>.vercel.app/api/mcp` · **License:** MIT
+**Live demo:** [roadie-eight.vercel.app](https://roadie-eight.vercel.app/) · **MCP endpoint:** `https://roadie-eight.vercel.app/api/mcp` · **License:** MIT
 
 ---
 
@@ -114,7 +116,7 @@ With **no keys at all** the app still runs end to end in *mock mode*. Qloo respo
 
 ```jsonc
 // Claude Desktop / Cursor: remote
-{ "mcpServers": { "roadie-qloo": { "type": "http", "url": "https://<your-deployment>/api/mcp" } } }
+{ "mcpServers": { "roadie-qloo": { "type": "http", "url": "https://roadie-eight.vercel.app/api/mcp" } } }
 
 // local stdio
 { "mcpServers": { "roadie-qloo": { "command": "npm", "args": ["run", "mcp", "--prefix", "/path/to/roadie"] } } }

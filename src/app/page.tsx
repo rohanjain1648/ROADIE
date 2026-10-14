@@ -249,7 +249,7 @@ export default function Home() {
   "mcpServers": {
     "roadie-qloo": {
       "type": "http",
-      "url": "https://<your-deployment>/api/mcp"
+      "url": "https://roadie-eight.vercel.app/api/mcp"
     }
   }
 }
